@@ -1,0 +1,42 @@
+Stream In Java
+Last Updated : 18 Mar, 2026
+	Stream was introduced in Java 8, the Stream API is used to process collections of objects. It is a sequence of objects that supports various methods that can be pipelined to produce the desired result. 
+Use of Stream in Java
+The uses of Stream in Java are mentioned below:
+	•	Stream API is a way to express and process collections of objects.
+	•	Enable us to perform operations like filtering, mapping, reducing and sorting.
+How to Create a Java Stream
+Java Stream Creation is one of the most basic steps before considering the functionalities of the Java Stream. Below is the syntax given for declaring a Java Stream.
+Syntax
+Stream<T> stream;
+	•	Stream<T>: general object stream for reference types
+Java Stream Features
+The features of Java streams are mentioned below:
+	•	A Stream is not a data structure; it just takes input from Collections, Arrays or I/O channels.
+	•	Streams do not modify the original data; they only produce results using their methods.
+	•	Intermediate operations (like filter, map, etc.) are lazy and return another Stream, so you can chain them together.
+	•	A terminal operation (like collect, forEach, count) ends the stream and gives the final result.
+Different Operations On Streams
+There are two types of Operations in Streams:
+	1	Intermediate Operations
+	2	Terminal Operations
+Intermediate Operations
+Intermediate Operations are the types of operations in which multiple methods are chained in a row.
+Characteristics of Intermediate Operations
+	•	Methods are chained together.
+	•	Intermediate operations transform a stream into another stream.
+	•	It enables the concept of filtering where one method filters data and passes it to another method after processing.
+Important Intermediate Operations
+There are a few Intermediate Operations mentioned below:
+1. map(): The map method is used to return a stream consisting of the results of applying the given function to the elements of this stream.
+Syntax:
+<R> Stream<R> map(Function<? super T, ? extends R> mapper)
+2. filter(): The filter method is used to select elements as per the Predicate passed as an argument.
+Syntax:
+Stream<T> filter(Predicate<? super T> predicate)
+3. sorted(): The sorted method is used to sort the stream.
+Syntax:
+Stream<T> sorted() Stream<T> sorted(Comparator<? super T> comparator)
+4. flatMap(): The flatMap operation in Java Streams is used to flatten a stream of collections into a single stream of elements
+
+Source: https://www.geeksforgeeks.org/java/stream-in-java/
