@@ -9,6 +9,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 public class DataStreamGUI {
     JFrame frame;
@@ -99,26 +101,24 @@ public class DataStreamGUI {
                 return;
             }
 
-            dataItems.clear();
-            for (String token : source.split("[,\\n\\r]+")) {
-                String trimmed = token.trim();
-                if (!trimmed.isEmpty()) {
-                    dataItems.add(trimmed);
-                }
-            }
+            dataItems = java.util.regex.Pattern.compile("[,\\n\\r]+")
+                    .splitAsStream(source)
+                    .map(String::trim)
+                    .filter(token -> !token.isEmpty())
+                    .collect(Collectors.toCollection(ArrayList::new));
 
-            outputArea.setText("");
-            for (String item : dataItems) {
-                outputArea.append(item + "\n");
+            outputArea.setText(dataItems.stream().collect(Collectors.joining("\n")));
+            if (!dataItems.isEmpty()) {
+                outputArea.append("\n");
             }
         });
         stop.addActionListener(e -> {
             outputArea.append("Stream stopped.\n");
         });
         reset.addActionListener(e -> {
-            outputArea.setText("");
-            for (String item : dataItems) {
-                outputArea.append(item + "\n");
+            outputArea.setText(dataItems.stream().collect(Collectors.joining("\n")));
+            if (!dataItems.isEmpty()) {
+                outputArea.append("\n");
             }
         });
         clear.addActionListener(e -> {
@@ -157,18 +157,18 @@ public class DataStreamGUI {
             }
 
             outputArea.setText("");
-            boolean found = false;
-            String lowerQuery = query.toLowerCase();
-            for (String line : fileContent.split("\\R")) {
-                if (line.toLowerCase().contains(lowerQuery)) {
-                    outputArea.append(line + "\n");
-                    found = true;
-                }
+            String lowerQuery = query.toLowerCase(Locale.ROOT);
+            List<String> matches = fileContent.lines()
+                    .filter(line -> line.toLowerCase(Locale.ROOT).contains(lowerQuery))
+                    .collect(Collectors.toList());
+
+            if (matches.isEmpty()) {
+                outputArea.append("No matches found for: " + query + "\n");
+                return;
             }
 
-            if (!found) {
-                outputArea.append("No matches found for: " + query + "\n");
-            }
+            outputArea.setText(matches.stream().collect(Collectors.joining("\n")));
+            outputArea.append("\n");
         });
 
         frame.setVisible(true);
