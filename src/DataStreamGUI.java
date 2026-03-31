@@ -27,6 +27,19 @@ public class DataStreamGUI {
     JButton search;
     List<String> dataItems;
 
+    private void runSafely(String actionName, Runnable action) {
+        try {
+            action.run();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(
+                    frame,
+                    actionName + " failed: " + ex.getMessage(),
+                    "Unexpected Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+
     public DataStreamGUI() {
         frame = new JFrame("Data Stream");
         panel = new JPanel(new BorderLayout(10, 10));
@@ -94,7 +107,7 @@ public class DataStreamGUI {
         frame.pack();
         frame.setLocationRelativeTo(null);
 
-        start.addActionListener(e -> {
+        start.addActionListener(e -> runSafely("Start", () -> {
             String source = inputArea.getText().isBlank() ? input.getText() : inputArea.getText();
             if (source == null || source.isBlank()) {
                 outputArea.setText("Enter comma-separated values or load a file first.\n");
@@ -111,24 +124,24 @@ public class DataStreamGUI {
             if (!dataItems.isEmpty()) {
                 outputArea.append("\n");
             }
-        });
-        stop.addActionListener(e -> {
+        }));
+        stop.addActionListener(e -> runSafely("Stop", () -> {
             outputArea.append("Stream stopped.\n");
-        });
-        reset.addActionListener(e -> {
+        }));
+        reset.addActionListener(e -> runSafely("Reset", () -> {
             outputArea.setText(dataItems.stream().collect(Collectors.joining("\n")));
             if (!dataItems.isEmpty()) {
                 outputArea.append("\n");
             }
-        });
-        clear.addActionListener(e -> {
+        }));
+        clear.addActionListener(e -> runSafely("Clear", () -> {
             input.setText("");
             inputArea.setText("");
             outputArea.setText("");
             searchArea.setText("");
             dataItems.clear();
-        });
-        select.addActionListener(e -> {
+        }));
+        select.addActionListener(e -> runSafely("Select File", () -> {
             JFileChooser fileChooser = new JFileChooser();
             int result = fileChooser.showOpenDialog(frame);
             if (result == JFileChooser.APPROVE_OPTION) {
@@ -141,9 +154,9 @@ public class DataStreamGUI {
                     JOptionPane.showMessageDialog(frame, "Could not read file: " + ex.getMessage(), "Read Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
-        });
+        }));
 
-        search.addActionListener(e -> {
+        search.addActionListener(e -> runSafely("Search", () -> {
             String query = searchArea.getText().trim();
             if (query.isEmpty()) {
                 outputArea.append("Enter a search term in the search area.\n");
@@ -169,7 +182,7 @@ public class DataStreamGUI {
 
             outputArea.setText(matches.stream().collect(Collectors.joining("\n")));
             outputArea.append("\n");
-        });
+        }));
 
         frame.setVisible(true);
     }
